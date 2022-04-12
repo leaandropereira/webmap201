@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>First Web Map 201</title>
+        <link rel="stylesheet" href="src/leaflet.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="src/leaflet-src.js"></script>
+        <script src="src/jquery-3.6.0.min.js"></script>
+        <style>
+            #mapdiv{
+                height: 100vh;
+            }
+     
+        </style>
+    </head>
+    <body>        
+        <div id="side-bar" class="col-md-3"></div>
+        <div id="mapdiv" class="col-md-9"></div>
+        <script>
+            var mymap; 
+            var lyrOSM; // Background padrão do leaflet poderia ser outro...
+            var mrkCurrentLocation;
+            setInterval(function(){
+                                mymap.locate();
+                                }, 5000); // essa opção faz a geolocalização atualizar em 5 e 5 segundos
+            
+            $(document).ready(function(){
+                    mymap = L.map('mapdiv', {center:[19.4, -99.2], zoom:13});
+                    lyrOSM = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png');
+                    mymap.addLayer(lyrOSM);
+                    mymap.on('click', function(e){
+                        if(e.originalEvent.shiftKey){
+                            alert(mymap.getZoom());
+                        } else{
+                            alert(e.latlng.toString());
+                        }
+                    });
+                    mymap.on('contextmenu', function(e){ // contextmenu é com botão direito!
+                    
+                        var options = {weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'}; // opções de formatação da data
+                        var today  = new Date().toLocaleDateString("pt-BR", options);
+                        
+                       L.marker(e.latlng).addTo(mymap).bindPopup(e.latlng.toString()+"<br/>"+ today.toString());
+                    });
+                    mymap.on('keypress', function(e){
+                             if (e.originalEvent.key=="l"){
+                                 mymap.locate();
+                                
+                                 }                    
+                    });
+                    mymap.on('locationfound', function(e){
+                        if(mrkCurrentLocation){
+                            mrkCurrentLocation.remove();
+                        }                        
+                        mrkCurrentLocation = L.circle(e.latlng,{radius:e.accuracy/2}).addTo(mymap);
+                        mymap.setView(e.latlng, 14);
+                    })
+            });
+            
+        </script>
+    </body>
+</html>
