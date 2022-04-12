@@ -15,16 +15,21 @@
         </style>
     </head>
     <body>        
-        <div id="side-bar" class="col-md-3"></div>
+        <div id="side-bar" class="col-md-3">
+           <button id='btnLocate' class="btn btn-primary btn-block">Locate</button>
+            <h4>Zoom Level: <span id='zoom-level'></span></h4>
+            <h4>Map Center: <span id='map-center'></span></h4>
+            <h4>Mouse Location: <span id='mouse-location'></span></h4>
+        </div>
         <div id="mapdiv" class="col-md-9"></div>
         <script>
             var mymap; 
             var lyrOSM; // Background padrão do leaflet poderia ser outro...
             var mrkCurrentLocation;
-            setInterval(function(){
-                                mymap.locate();
-                                }, 5000); // essa opção faz a geolocalização atualizar em 5 e 5 segundos
-            
+//            setInterval(function(){
+         //   mymap.locate();
+        //     }, 5000); // essa opção faz a geolocalização atualizar em 5 e 5 segundos
+             
             $(document).ready(function(){
                     mymap = L.map('mapdiv', {center:[19.4, -99.2], zoom:13});
                     lyrOSM = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png');
@@ -55,8 +60,22 @@
                         }                        
                         mrkCurrentLocation = L.circle(e.latlng,{radius:e.accuracy/2}).addTo(mymap);
                         mymap.setView(e.latlng, 14);
-                    })
+                    });
+                    mymap.on('zoomend', function(){//getzoom pega o zoom atual e escreve no htl
+                       $('#zoom-level').html(mymap.getZoom());
+                    });
+                    mymap.on('moveend', function(){
+                        $('#map-center').html(mymap.getCenter().toString()); 
+                    });
+                    mymap.on('mousemove', function(e){
+                        $("#mouse-location" ).html(e.latlng.toString()); 
+                    });
+                
+                    $("#btnLocate").click(function(){
+                        mymap.locate();
+                    });
             });
+            
             
         </script>
     </body>
