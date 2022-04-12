@@ -59,9 +59,9 @@
                             mrkCurrentLocation.remove();
                         }                        
                         mrkCurrentLocation = L.circle(e.latlng,{radius:e.accuracy/2}).addTo(mymap);
-                        mymap.setView(e.latlng, 14);
+                        mymap.setView(e.latlng, 18);
                     });
-                    mymap.on('zoomend', function(){//getzoom pega o zoom atual e escreve no htl
+                    mymap.on('zoomend', function(){//getzoom pega o zoom atual e escreve html
                        $('#zoom-level').html(mymap.getZoom());
                     });
                     mymap.on('moveend', function(){
@@ -73,6 +73,10 @@
                 
                     $("#btnLocate").click(function(){
                         mymap.locate();
+                        mymap.setView(e.latlng, 18);
+                        setInterval(function(){
+                        mymap.locate();
+                        }, 1000); // essa opção faz a geolocalização atualizar em 5 e 5 segundos
                     });
             });
             
