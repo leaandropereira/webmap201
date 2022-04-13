@@ -11,14 +11,17 @@
         <script src="plugins/L.Control.Pan.js"></script>
         <link rel="stylesheet" href="plugins/L.Control.Zoomslider.css">
         <script src="plugins/L.Control.Zoomslider.js"></script>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@v0.74.0/dist/L.Control.Locate.min.css" />
 
-        <script src="plugins/geolet.js"></script>
-       
+<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@v0.74.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+   
         <style>
             #mapdiv{
                 height: 100vh;
             }
-     
+         
         </style>
     </head>
     <body>        
@@ -34,7 +37,7 @@
             var mymap; 
             var lyrOSM; // Background padrão do leaflet poderia ser outro...
             var mrkCurrentLocation;
-            var popZocalo;
+            
 
 
              
@@ -47,10 +50,10 @@
                     L.control.zoomslider({position: 'topright'}).addTo(mymap);
                 
                                      
-                    L.geolet({
-                        position: 'topleft'
-                    }).addTo(mymap);
+                   
                 
+                    L.control.locate({initialZoomLevel: 15}).addTo(mymap);
+
                     mymap.on('click', function(e){
                         if(e.originalEvent.shiftKey){
                             alert(mymap.getZoom());
