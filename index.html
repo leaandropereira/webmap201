@@ -7,6 +7,13 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="src/leaflet-src.js"></script>
         <script src="src/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" href="plugins/L.Control.Pan.css">
+        <script src="plugins/L.Control.Pan.js"></script>
+        <link rel="stylesheet" href="plugins/L.Control.Zoomslider.css">
+        <script src="plugins/L.Control.Zoomslider.js"></script>
+
+        <script src="plugins/geolet.js"></script>
+       
         <style>
             #mapdiv{
                 height: 100vh;
@@ -20,20 +27,30 @@
             <h4>Zoom Level: <span id='zoom-level'></span></h4>
             <h4>Map Center: <span id='map-center'></span></h4>
             <h4>Mouse Location: <span id='mouse-location'></span></h4>
+            <h4>Current Location: <span id='current-location'></span></h4>
         </div>
         <div id="mapdiv" class="col-md-9"></div>
         <script>
             var mymap; 
             var lyrOSM; // Background padrão do leaflet poderia ser outro...
             var mrkCurrentLocation;
-//            setInterval(function(){
-         //   mymap.locate();
-        //     }, 5000); // essa opção faz a geolocalização atualizar em 5 e 5 segundos
+            var popZocalo;
+
+
              
             $(document).ready(function(){
-                    mymap = L.map('mapdiv', {center:[19.4, -99.2], zoom:13});
+                    mymap = L.map('mapdiv', {center:[19.4, -99.2], zoom:13, zoomControl:false});
                     lyrOSM = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png');
                     mymap.addLayer(lyrOSM);
+                
+                    L.control.pan().addTo(mymap);
+                    L.control.zoomslider({position: 'topright'}).addTo(mymap);
+                
+                                     
+                    L.geolet({
+                        position: 'topleft'
+                    }).addTo(mymap);
+                
                     mymap.on('click', function(e){
                         if(e.originalEvent.shiftKey){
                             alert(mymap.getZoom());
@@ -57,9 +74,14 @@
                     mymap.on('locationfound', function(e){
                         if(mrkCurrentLocation){
                             mrkCurrentLocation.remove();
+                            //L.marker.remove(e);
+                            
                         }                        
                         mrkCurrentLocation = L.circle(e.latlng,{radius:e.accuracy/2}).addTo(mymap);
                         mymap.setView(e.latlng, 18);
+                        $('#current-location').html(e.latlng.toString()); 
+                        //L.marker(e.latlng).addTo(mymap);
+                       
                     });
                     mymap.on('zoomend', function(){//getzoom pega o zoom atual e escreve html
                        $('#zoom-level').html(mymap.getZoom());
@@ -68,18 +90,16 @@
                         $('#map-center').html(mymap.getCenter().toString()); 
                     });
                     mymap.on('mousemove', function(e){
-                        $("#mouse-location" ).html(e.latlng.toString()); 
+                        $("#mouse-location").html(e.latlng.toString()); 
                     });
-                
+                                       
                     $("#btnLocate").click(function(){
                         mymap.locate();
-                        mymap.setView(e.latlng, 18);
-                        setInterval(function(){
-                        mymap.locate();
-                        }, 1000); // essa opção faz a geolocalização atualizar em 5 e 5 segundos
-                    });
+                        
+                      });
             });
-            
+
+
             
         </script>
     </body>
